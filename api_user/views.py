@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework import generics, authentication, permissions
 from api_user import serializers
 from core.models import Profile, FriendRequest
@@ -26,12 +25,13 @@ class FriendRequestViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         try:
             serializer.save(askFrom=self.request.user)
-        except:
+        except BaseException:
             raise ValidationError("User can have only unique request")
 
     def destroy(self, request, *args, **kwargs):
         response = {'message': 'Delete is not allowed !'}
         return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
     def partial_update(self, request, *args, **kwargs):
         response = {'message': 'Patch is not allowed !'}
         return Response(response, status=status.HTTP_400_BAD_REQUEST)
@@ -46,8 +46,8 @@ class ProfileViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(userPro=self.request.user)
 
-class MyProfileListView(generics.ListAPIView):
 
+class MyProfileListView(generics.ListAPIView):
     queryset = Profile.objects.all()
     serializer_class = serializers.ProfileSerializer
     authentication_classes = (authentication.TokenAuthentication,)
@@ -55,4 +55,3 @@ class MyProfileListView(generics.ListAPIView):
 
     def get_queryset(self):
         return self.queryset.filter(userPro=self.request.user)
-

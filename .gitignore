@@ -127,3 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+py37/
+_media/
+workspace.code-workspace
